@@ -1,0 +1,7 @@
+.env
+.idea
+venv
+__pycache__/
+tweet_mining/__pycache__/
+tweet_mining/sentiment_analysis/__pycache__/
+tweet_mining/sentiment_analysis/datascience.h5

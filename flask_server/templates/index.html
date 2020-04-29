@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!--Loading javascript files for the daterange picker-->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+<!--Loading javascript file for D3.js-->
+<script src="https://d3js.org/d3.v4.js" charset="utf-8"></script>
+
+<!-- Load d3-cloud -->
+<script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3.layout.cloud.js"></script>
+
+<!--Loading local javascript files for visualizations-->
+<script src="static/markerMap.js"></script>
+<script src="static/sentimentGraph.js"></script>
+<script src="static/wordCloud.js"></script>
+
+<div>
+    <h2>Select a Date Range!</h2>
+    <form action="" method="post">
+        <input type="text" name="daterange" value="" />
+        <script>
+            $(function() {
+              $('input[name="daterange"]').daterangepicker({
+                opens: 'left'
+              });
+            });
+        </script>
+        <input type="submit" value="Submit">
+    </form>
+</div>
+
+<div>
+    <h2>Marker Map</h2>
+    <div id="map"></div>
+</div>
+
+<div>
+    <h2>Sentiment Time Series Graph</h2>
+    <div id="timeSeriesGraph"></div>
+</div>
+
+<!--Passing data from backend needed to create visualizations-->
+{% block javascript %}
+<script>
+    setMarkerData(JSON.parse({{ marker_map | tojson }}));
+    makeGraph(JSON.parse({{ time_series | tojson }}));
+    var wordCloudData = JSON.parse({{ word_cloud | tojson }});
+</script>
+{% endblock %}
+
+<!--Calling Google Maps API-->
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSH9y6TphiwIouSUKO0w8JHU32RiXYEdc&callback=initMap">
+</script>
+
+<!--Creating flex box to fit the word clouds horizontally -->
+<style>
+.flex-container {
+  display: flex;
+  flex-direction: row;
+}
+h3 {
+    display: block;
+    font-size: 1.17em;
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+}
+</style>
+
+<div class="flex-container">
+    <h2>Word Clouds</h2>
+    <div id="demWordCloud"></div>
+    <div id="repWordCloud"></div>
+    <script>
+        call_layout(wordCloudData.dem, wordCloudData.rep);
+    </script>
+</div>
+{% endblock %}
