@@ -68,3 +68,5 @@ function initMap() {
       })(marker, i));
     }
 }
+
+#ALL CREDIT GOES TO MEGHANA
